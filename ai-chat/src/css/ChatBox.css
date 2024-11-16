@@ -1,0 +1,15 @@
+/* ChatBox.css */
+
+.chat-box {
+  flex: 1;
+  padding: 20px;
+  background-color: #ffffff;
+  overflow-y: auto;
+}
+
+.chat-message {
+  padding: 10px;
+  margin-bottom: 5px;
+  background-color: #ecf0f1;
+  border-radius: 5px;
+}

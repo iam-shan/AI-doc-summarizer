@@ -1,0 +1,12 @@
+
+.chat-app {
+  display: flex; /* Use flexbox to align Sidebar and ChatContainer side by side */
+  height: 100vh; /* Full viewport height */
+}
+
+.chat-container {
+  flex: 1; /* Take the remaining space */
+  display: flex;
+  flex-direction: column; /* Stack content vertically */
+  background-color: #fff;
+}
