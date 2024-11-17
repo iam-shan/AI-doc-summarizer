@@ -6,13 +6,7 @@ import UserInput from '../components/UserInput';
 import '../css/ChatApp.css';
 
 const ChatApp = () => {
-  const [chats, setChats] = useState([
-    {
-      id: 1,
-      title: 'constitution.pdf',
-      messages: ['Welcome to the helpful PDF file on the Constitution of the United States!'],
-    },
-  ]);
+  const [chats, setChats] = useState([]);
   const [currentChatId, setCurrentChatId] = useState(1);
 
   const currentChat = chats.find((chat) => chat.id === currentChatId);
@@ -93,7 +87,7 @@ const ChatApp = () => {
       />
       <div className="chat-container">
         <ChatHeader
-          title={currentChat?.title || 'No Chat Selected'}
+          title={currentChat?.title || ''}
           onSummarize={handleSummarize}
           onDownload={handleDownloadChat}
           onClearChat={handleClearChat}

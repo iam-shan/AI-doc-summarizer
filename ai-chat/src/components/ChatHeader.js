@@ -6,7 +6,7 @@ import '../css/ChatHeader.css';
 const ChatHeader = ({ title, onSummarize, onDownload, onClearChat }) => {
   return (
     <div className="chat-header">
-      <h2>Chat with {title}</h2>
+      <h2>{title ? `Chat with ${title}` : 'No chat selected'}</h2>
         <div className="chat-header-actions">
             <button className="summarize-btn" onClick={onSummarize} title="Summarize Chat">
                 Summarize
