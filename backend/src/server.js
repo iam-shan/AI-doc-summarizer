@@ -7,8 +7,8 @@ const { models,sequelize, initializeDatabase } = require('./models');
 app.set('models', models)
 const fileUpload = require('./routes/fileUploadRouter')
 const chat = require('./routes/chatRouter')
-const authRoutes = require('./routes/authRoutes')
 
+const authRoutes = require('./routes/authRoutes')
 
 //importing routesd
 
