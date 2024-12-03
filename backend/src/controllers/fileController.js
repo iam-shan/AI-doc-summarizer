@@ -1,9 +1,11 @@
 const { detectContext } = require('../handlers/contextHandler');
 const { createSession } = require('../handlers/vectorHandler');
 const { generateEmbedding } = require('../handlers/embeddingHandler');
+const { generateSessionId } = require('../handlers/users_management_handler')
 const pdf = require('pdf-parse');
 const mammoth = require('mammoth');
 const Tesseract = require('tesseract.js');
+const axios =  require('axios')
 
 const { storeEmbedding, getEmbeddings } = require('../handlers/qdrantHandler');
 
@@ -34,8 +36,21 @@ async function extractTextFromFile(file) {
  * Function to extract text from PDF
  */
 async function extractTextFromPDF(fileBuffer) {
-    const data = await pdf(fileBuffer);
-    return data.text || ''; // Return extracted text or an empty string
+    try {
+        // Attempt to extract text directly
+        const data = await pdf(fileBuffer);
+
+        // If text extraction is unreliable, fallback to OCR
+        if (!data.text || data.text.trim().length < 20) {
+            console.log('Fallback to OCR for PDF');
+            return await extractTextFromImage(fileBuffer); // Reuse OCR function
+        }
+
+        return data.text;
+    } catch (error) {
+        console.error('Error extracting PDF text:', error.message);
+        throw new Error('Failed to extract text from PDF');
+    }
 }
 
 /**
@@ -75,16 +90,21 @@ exports.uploadFile = async (req, res) => {
         const fileContent = await extractTextFromFile(file);
 
         console.log(fileContent)
-
+        console.log('filecontent -end')
         // // Generate embeddings and store them
-        // const embeddings = await generateEmbedding(file);
-        // console.log(embeddings)
-        // // await storeEmbedding(file.id, embeddings);
+        const embeddings = await generateEmbedding(fileContent);
+// console.log(embeddings);
+        // userId should be passed to map the session and users
+        const sessionId = await generateSessionId();
+
+       
+        await storeEmbedding(sessionId, embeddings);
 
         // // Create a session
-        // // const sessionId = await createSession(file.id);
+        // const sessionId = await createSession(file.id);
 
-        res.status(200).json({ message: 'File uploaded and processed successfully', sessionId });
+        // res.status(200).json({ message: 'File uploaded and processed successfully', sessionId });
+        res.status(200).send({msg: "file uploaded sucessfully", session_id:sessionId})
     } catch (error) {
         console.log(error)
     }

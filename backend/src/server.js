@@ -9,6 +9,7 @@ const fileUpload = require('./routes/fileUploadRouter')
 const chat = require('./routes/chatRouter')
 
 const authRoutes = require('./routes/authRoutes')
+const {initializeCollection} = require('./handlers/qdrantHandler')
 
 //importing routesd
 
@@ -38,11 +39,43 @@ const startServer = async () => {
     try {
         await initializeDatabase(); // Ensure DB is connected
         await sequelize.sync();    // Synchronize models
+        await initializeCollection("vectordb");
         console.log('Database models synchronized.');
     } catch (error) {
         console.error('Unable to start the server:', error.message);
     }
 };
+
+const axios = require('axios');
+
+const createOrUpdateCollection = async () => {
+  try {
+    const apiKey = process.env.QDRANT_API_KEY;
+    const collectionName = 'vectordb';
+
+    const response = await axios.put(
+      `${process.env.QDRANT_URL}/collections/${collectionName}`,
+      {
+        vectors: {
+          size: 1536, // Set the vector size to match OpenAI embeddings
+          distance: 'Cosine', // Choose a distance metric (Cosine is recommended)
+        },
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'api-key': apiKey,
+        },
+      }
+    );
+
+    console.log('Collection created or updated:', response.data);
+  } catch (error) {
+    console.error('Error creating or updating collection:', error.response?.data || error.message);
+  }
+};
+
+createOrUpdateCollection();
 
 startServer();
 // running the server

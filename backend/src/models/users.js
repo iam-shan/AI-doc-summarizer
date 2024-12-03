@@ -23,7 +23,11 @@ module.exports = (sequelize, DataTypes) => {
     password_hash: {
       type: DataTypes.STRING,
       allowNull: false,
-    }
+    },
+    sessions: {
+      type: DataTypes.ARRAY(DataTypes.INTEGER), // Array of integers for restaurant IDs
+      allowNull: true,
+    },
   }, 
   {
     tableName: 'users',

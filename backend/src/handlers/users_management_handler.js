@@ -1,10 +1,14 @@
-//UsersManagement Handler
+const crypto = require('crypto');
 
-class UsersManagementHander{
-    constructor(){}
+const generateSessionId = async()=>{
+    //creating a unique session id
+    const session_id = crypto.randomBytes(16).toString('hex');
+    return session_id;
 
-     
-
+    // logic for appending session id into users column
+    //
+    //
 }
-
-module.exports = UsersManagementHander;
+module.exports ={
+    generateSessionId
+}

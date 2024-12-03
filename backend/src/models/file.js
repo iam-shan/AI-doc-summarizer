@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         name: DataTypes.STRING,
         path: DataTypes.STRING,
+        session_id:{
+            type:DataTypes.STRING,
+            allowNull: false,
+        }
     });
 
     return File;
