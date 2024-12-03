@@ -1,5 +1,9 @@
 const multer = require('multer');
 const path = require('path');
+const pdf = require('pdf-parse');
+const mammoth = require('mammoth');
+const Tesseract = require('tesseract.js');
+
 
 // Configure multer storage
 // const storage = multer.diskStorage({
