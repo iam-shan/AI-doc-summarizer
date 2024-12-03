@@ -11,6 +11,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "cosine-similarity": "^1.0.1",
+    "crypto": "^1.0.1",
+    "openai": "^4.73.1",
+    "uuid": "^11.0.3",
     "@cerebras/cerebras_cloud_sdk": "^1.12.0",
     "@qdrant/qdrant-js": "^1.12.0",
     "axios": "^1.7.8",
