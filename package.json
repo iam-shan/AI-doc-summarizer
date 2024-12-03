@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "cosine-similarity": "^1.0.1",
-    "crypto": "^1.0.1",
-    "openai": "^4.73.1",
-    "uuid": "^11.0.3"
-  }
-}
