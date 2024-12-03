@@ -7,17 +7,22 @@ const { models,sequelize, initializeDatabase } = require('./models');
 app.set('models', models)
 const fileUpload = require('./routes/fileUploadRouter')
 const chat = require('./routes/chatRouter')
+const cors = require('cors');
+const authenticateJWT = require('./middlewares/auth')
 
 const authRoutes = require('./routes/authRoutes')
 const {initializeCollection} = require('./handlers/qdrantHandler')
 
-//importing routesd
-
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 app.use('/',router);
 app.use('/api/auth', authRoutes);
-app.use('/upload', fileUpload);
-app.use('/chat', chat)
+app.use('/upload', authenticateJWT, fileUpload);
+app.use('/chat', authenticateJWT, chat)
 app.get('/health',(req,res)=>{
     res.send({"msg": "Applicaiton is working !!" ,  "date" : `${new Date()}`})
 })

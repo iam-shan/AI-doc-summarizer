@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import '../css/UserInput.css';
 
 const UserInput = ({ onSend }) => {
   const [input, setInput] = useState('');
@@ -11,22 +10,21 @@ const UserInput = ({ onSend }) => {
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleSend();
-    }
-  };
-
   return (
-    <div className="user-input">
+    <div className="p-4 bg-gray-900 flex">
       <input
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Ask any question..."
-        onKeyPress={handleKeyPress} // Listen for Enter key press
+        className="flex-1 p-2 rounded-l bg-gray-700 text-white"
       />
-      <button onClick={handleSend}>Send</button>
+      <button
+        onClick={handleSend}
+        className="bg-blue-600 hover:bg-blue-700 p-2 rounded-r"
+      >
+        Send
+      </button>
     </div>
   );
 };
