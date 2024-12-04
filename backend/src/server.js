@@ -23,25 +23,35 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-app.use('/',router);
+app.options('/upload', cors()); 
+app.options('/api/auth/*', cors()); 
+app.options('/chat', cors()); 
+app.options('/user/*', cors()); 
+app.options('/user/fetchSessions', cors());
+app.options('/user/getChats', cors());
+
+// Then define all your routes
+app.use('/', router);
 app.use('/api/auth', authRoutes);
 app.use('/upload', authenticateJWT, fileUpload);
-app.use('/chat', authenticateJWT, chat)
-app.use('/user', user)
-app.get('/health',(req,res)=>{
-    res.send({"msg": "Applicaiton is working !!" ,  "date" : `${new Date()}`})
-})
+app.use('/chat', authenticateJWT, chat);
+app.use('/user', user);
 
-const multer = require('multer');
-
-const storage = multer.memoryStorage(); // Store files in memory as buffer
-const upload = multer({
-  storage,
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
-  },
+// Health check can be last
+app.get('/health', (req, res) => {
+    res.send({"msg": "Application is working !!", "date": `${new Date()}`});
 });
-app.use(multer)
+
+// const multer = require('multer');
+
+// const storage = multer.memoryStorage(); // Store files in memory as buffer
+// const upload = multer({
+//   storage,
+//   limits: {
+//     fileSize: 5 * 1024 * 1024, // 5MB limit
+//   },
+// });
+// app.use(multer)
 
 
 // Sync the database and start the server

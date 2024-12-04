@@ -112,8 +112,12 @@ exports.uploadFile = async (req, res) => {
         // const sessionId = await createSession(file.id);
 
         // res.status(200).json({ message: 'File uploaded and processed successfully', sessionId });
-        res.status(200).send({msg: "file uploaded sucessfully", fileId: fileId, session_id:sessionId})
+        res.status(200).send({msg: "file uploaded successfully", fileId: fileId, session_id: sessionId});
     } catch (error) {
-        console.log(error)
+        console.error('Upload error:', error);
+        res.status(500).json({ 
+            error: 'File upload failed', 
+            message: error.message 
+        });
     }
 };
