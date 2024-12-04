@@ -4,10 +4,33 @@ import { useNavigate } from 'react-router-dom';
 const Sidebar = ({ chats, currentChatId, onSelectChat, onNewChat }) => {
   const navigate = useNavigate();
 
-  const handleFileUpload = (event) => {
+  const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (file && file.type === 'application/pdf') {
-      onNewChat(file);
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const token = localStorage.getItem('token'); // Get JWT token
+
+        const response = await fetch('http://localhost:8080/upload', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to upload file');
+        }
+
+        const data = await response.json();
+        onNewChat({ id: data.fileId, title: file.name });
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        alert('Failed to upload file. Please try again.');
+      }
     } else {
       alert('Please upload a valid PDF file.');
     }

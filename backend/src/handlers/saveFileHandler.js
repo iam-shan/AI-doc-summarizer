@@ -6,6 +6,7 @@ const saveFile = async(req, session_id)=>{
             content: req.file.buffer, // Save file content as binary
             session_id,
           });
+        return fileRecord.id;
     } catch (error) {
         console.log(error)
     }

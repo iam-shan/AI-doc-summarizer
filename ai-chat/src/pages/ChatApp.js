@@ -7,9 +7,10 @@ import '../css/ChatApp.css';
 
 const ChatApp = () => {
   const [chats, setChats] = useState([]);
-  const [currentChatId, setCurrentChatId] = useState(1);
+  const [currentChatId, setCurrentChatId] = useState(null);
 
   const currentChat = chats.find((chat) => chat.id === currentChatId);
+  console.log(currentChat);
 
   return (
     <div className="flex min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 text-white">
@@ -17,9 +18,11 @@ const ChatApp = () => {
         chats={chats}
         currentChatId={currentChatId}
         onSelectChat={(chatId) => setCurrentChatId(chatId)}
-        onNewChat={(file) =>
-          setChats([...chats, { id: chats.length + 1, title: file.name, messages: [] }])
-        }
+        onNewChat={(newChat) => {
+          const newChatEntry = { id: newChat.fileId, title: newChat.title, messages: [] };
+          setChats((prevChats) => [...prevChats, newChatEntry]);
+          setCurrentChatId(newChat.fileId);
+        }}
       />
       <div className="flex-1 flex flex-col">
         <ChatHeader
