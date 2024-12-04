@@ -19,6 +19,7 @@ const LoginPage = () => {
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem('token', data.token);
+        localStorage.setItem('userId', data.userId);
         navigate('/chat');
       }
       else {
