@@ -27,13 +27,11 @@ const ChatApp = () => {
       }
 
       const data = await response.json();
-      // Transform the chat data into paired messages (user-bot)
       const formattedMessages = data.data.flatMap((chat) => [
         { sender: 'user', text: chat.userMessage },
         { sender: 'bot', text: chat.aiResponse }
       ]);
       setChats(formattedMessages);
-      console.log(data);
     } catch (error) {
       console.error('Error fetching chats:', error);
     }

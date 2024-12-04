@@ -6,40 +6,41 @@ const Sidebar = ({ onSelectChat, onNewChat, currentChatId }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchSessions = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const userId = localStorage.getItem('userId'); // Assume userId is stored in localStorage
-        const response = await fetch('http://localhost:8080/user/fetchSessions', {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ user_id: userId }),
-        });
+  const fetchSessions = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+      const response = await fetch('http://localhost:8080/user/fetchSessions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id: userId }),
+      });
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch sessions');
-        }
-
-        const data = await response.json();
-        setSessions(data.data);
-        console.log(data); // Logs sessions data (filename and session_id)
-      } catch (error) {
-        console.error('Error fetching sessions:', error);
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error('Failed to fetch sessions');
       }
-    };
 
+      const data = await response.json();
+      setSessions(data.data);
+      console.log(data);
+    } catch (error) {
+      console.error('Error fetching sessions:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchSessions();
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('userId'); // Optionally remove userId as well
+    localStorage.removeItem('userId');
     navigate('/login');
   };
 
@@ -66,8 +67,14 @@ const Sidebar = ({ onSelectChat, onNewChat, currentChatId }) => {
         const data = await response.json();
         console.log('File uploaded successfully:', data);
 
-        // Optionally trigger an update to the sessions list
-        // onNewChat(data);  // You can use this to update the session list after a new upload
+        await fetchSessions();
+        const newSession = data;
+        console.log(newSession);
+        if (newSession?.session_id) {
+          onSelectChat(newSession.session_id);
+        }
+
+        onNewChat(newSession);
 
       } catch (error) {
         console.error('Error uploading file:', error);
@@ -92,14 +99,14 @@ const Sidebar = ({ onSelectChat, onNewChat, currentChatId }) => {
             sessions.map((session) => (
               <li
                 key={session.session_id}
-                onClick={() => onSelectChat(session.session_id)} // Pass session_id to onSelectChat
+                onClick={() => onSelectChat(session.session_id)}
                 className={`p-2 rounded-lg cursor-pointer ${
                   session.session_id === currentChatId
                     ? 'bg-gray-600 text-white'
                     : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                 }`}
               >
-                {session.fileName} {/* Display file name */}
+                {session.fileName}
               </li>
             ))
           )}
