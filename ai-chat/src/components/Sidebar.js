@@ -102,7 +102,7 @@ const Sidebar = ({ onSelectChat, onNewChat, currentChatId }) => {
                 onClick={() => onSelectChat(session.session_id)}
                 className={`p-2 rounded-lg cursor-pointer ${
                   session.session_id === currentChatId
-                    ? 'bg-gray-600 text-white'
+                    ? 'bg-navy-500 text-white'
                     : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                 }`}
               >
