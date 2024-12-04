@@ -18,13 +18,12 @@ app.set('models', models);
 // Open CORS configuration
 app.use(cors({
   origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-  maxAge: 86400
+  methods: '*',
+  allowedHeaders: '*',
+  credentials: true
 }));
 
-// Handle all preflight
+// Handle preflight for all routes
 app.options('*', cors());
 
 // Routes
