@@ -9,7 +9,8 @@ const RegisterPage = () => {
     const { firstname, lastname, email, password } = e.target.elements;
 
     try {
-      const response = await fetch('http://localhost:8080/api/auth/register', {
+      // const response = await fetch('http://localhost:8080/api/auth/register', {
+        const response = await fetch('https://hepngrwaqb.us-east-2.awsapprunner.com/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

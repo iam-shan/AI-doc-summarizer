@@ -13,7 +13,8 @@ const UserInput = ({ sessionId, onSend, setIsLoading }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:8080/chat', {
+      // const response = await fetch('http://localhost:8080/chat', {
+        const response = await fetch('https://hepngrwaqb.us-east-2.awsapprunner.com/chat', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

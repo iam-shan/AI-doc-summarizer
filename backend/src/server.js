@@ -15,7 +15,7 @@ const authRoutes = require('./routes/authRoutes')
 const {initializeCollection} = require('./handlers/qdrantHandler')
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'https://main.d19opk0v2645vf.amplifyapp.com/',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));

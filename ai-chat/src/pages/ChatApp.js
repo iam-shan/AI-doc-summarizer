@@ -14,7 +14,8 @@ const ChatApp = () => {
   const fetchChats = async (sessionId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:8080/user/getChats', {
+      //const response = await fetch('http://localhost:8080/user/getChats', {
+        const response = await fetch('https://hepngrwaqb.us-east-2.awsapprunner.com/user/getChats', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -47,7 +48,8 @@ const ChatApp = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:8080/chat', {
+      // const response = await fetch('http://localhost:8080/chat', {
+        const response = await fetch('https://hepngrwaqb.us-east-2.awsapprunner.com/chat', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

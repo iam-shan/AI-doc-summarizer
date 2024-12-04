@@ -11,7 +11,8 @@ const Sidebar = ({ onSelectChat, onNewChat, currentChatId }) => {
     try {
       const token = localStorage.getItem('token');
       const userId = localStorage.getItem('userId');
-      const response = await fetch('http://localhost:8080/user/fetchSessions', {
+      //const response = await fetch('http://localhost:8080/user/fetchSessions', {
+      const response = await fetch('https://hepngrwaqb.us-east-2.awsapprunner.com/user/fetchSessions', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -53,7 +54,9 @@ const Sidebar = ({ onSelectChat, onNewChat, currentChatId }) => {
       formData.append('file', file);
 
       try {
-        const response = await fetch('http://localhost:8080/upload', {
+        // const response = await fetch('http://localhost:8080/upload', {
+          const response = await fetch('https://hepngrwaqb.us-east-2.awsapprunner.com/upload', {
+           
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
