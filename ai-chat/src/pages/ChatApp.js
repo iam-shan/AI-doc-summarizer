@@ -8,8 +8,9 @@ import '../css/ChatApp.css';
 const ChatApp = () => {
   const [chats, setChats] = useState([]);
   const [currentChatId, setCurrentChatId] = useState(null);
+  const [currentFileName, setCurrentFileName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch chats based on the selected session
   const fetchChats = async (sessionId) => {
     try {
       const token = localStorage.getItem('token');
@@ -37,37 +38,95 @@ const ChatApp = () => {
     }
   };
 
+  const handleSummarize = async () => {
+    if (!currentChatId) {
+      alert('Please select a document first');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:8080/chat', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          session_id: currentChatId,
+          userMessage: "Summarize this PDF document."
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+
+      const data = await response.json();
+      
+      setChats(prevChats => [
+        ...prevChats,
+        { sender: 'user', text: "Summarize this PDF document." },
+        { sender: 'bot', text: data.aiResponse }
+      ]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Error getting summary. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDownload = () => {
+    if (chats.length === 0) {
+      alert('No chat messages to download');
+      return;
+    }
+
+    const chatContent = chats.map(msg => {
+      const sender = msg.sender === 'user' ? 'You' : 'AI';
+      return `${sender}: ${msg.text}\n`;
+    }).join('\n');
+
+    const blob = new Blob([chatContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `chat-${currentFileName || 'session'}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="flex min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 text-white">
       <Sidebar
         currentChatId={currentChatId}
-        onSelectChat={(sessionId) => {
-          setCurrentChatId(sessionId); // Update currentChatId when a session is selected
-          fetchChats(sessionId); // Fetch chats for the selected session
-        }}
-        onNewChat={(newChat) => {
-          const newChatEntry = { id: newChat.fileId, title: newChat.title, messages: [] };
-          setChats((prevChats) => [...prevChats, newChatEntry]);
-          setCurrentChatId(newChat.fileId);
+        onSelectChat={(sessionId, fileName) => {
+          setCurrentChatId(sessionId);
+          setCurrentFileName(fileName);
+          fetchChats(sessionId);
         }}
       />
       <div className="flex-1 flex flex-col">
         <ChatHeader
-          title={currentChatId ? `Session: ${currentChatId}` : 'Chat Application'}
-          onSummarize={() => {}}
-          onDownload={() => {}}
-          onClearChat={() => {}}
+          title={currentFileName || 'No Chat Selected'}
+          onSummarize={handleSummarize}
+          onDownload={handleDownload}
         />
-        <ChatBox messages={chats} />
+        <ChatBox messages={chats} isLoading={isLoading} />
         <UserInput
-          sessionId={currentChatId}  // Pass sessionId to UserInput
-          onSend={(userMessage, aiResponse) =>
+          sessionId={currentChatId}
+          setIsLoading={setIsLoading} // Pass setIsLoading to UserInput
+          onSend={async (userMessage, aiResponse) => {
             setChats((prevChats) => [
               ...prevChats,
               { sender: 'user', text: userMessage },
               { sender: 'bot', text: aiResponse }
-            ])
-          }
+            ]);
+          }}
         />
       </div>
     </div>

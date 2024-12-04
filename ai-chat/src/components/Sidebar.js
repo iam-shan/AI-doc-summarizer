@@ -25,7 +25,8 @@ const Sidebar = ({ onSelectChat, onNewChat, currentChatId }) => {
       }
 
       const data = await response.json();
-      setSessions(data.data);
+      // Reverse the sessions array to show newest first
+      setSessions([...data.data].reverse());
       console.log(data);
     } catch (error) {
       console.error('Error fetching sessions:', error);
@@ -65,33 +66,32 @@ const Sidebar = ({ onSelectChat, onNewChat, currentChatId }) => {
         }
 
         const data = await response.json();
-        console.log('File uploaded successfully:', data);
+        console.log('Upload response:', data);
 
-        await fetchSessions();
-        const newSession = data;
-        console.log(newSession);
-        if (newSession?.session_id) {
-          onSelectChat(newSession.session_id);
+        if (data && data.session_id) {
+          onSelectChat(data.session_id, file.name);
         }
-
-        onNewChat(newSession);
+        
+        await fetchSessions();
 
       } catch (error) {
         console.error('Error uploading file:', error);
       }
     }
   };
-
+  
   return (
-    <div className="w-1/4 bg-gray-800 p-4 shadow-lg border-r border-gray-700 h-screen flex flex-col justify-between">
-      <div>
-        <label className="block text-center bg-yellow-700 hover:bg-yellow-600 text-white py-2 px-4 rounded-lg cursor-pointer mb-4">
+    <div className="w-1/4 bg-gray-800 p-4 shadow-lg border-r border-gray-700 h-screen flex flex-col">
+      <div className="mb-4">
+        <label className="block text-center bg-yellow-700 hover:bg-yellow-600 text-white py-2 px-4 rounded-lg cursor-pointer">
           Upload New PDF
           <input type="file" accept="application/pdf" onChange={handleFileUpload} style={{ display: 'none' }} />
         </label>
+      </div>
 
-        <hr className="border-gray-600 my-4" />
+      <hr className="border-gray-600 mb-4" />
 
+      <div className="flex-1 overflow-y-auto">
         <ul className="space-y-2">
           {loading ? (
             <p>Loading...</p>
@@ -99,7 +99,7 @@ const Sidebar = ({ onSelectChat, onNewChat, currentChatId }) => {
             sessions.map((session) => (
               <li
                 key={session.session_id}
-                onClick={() => onSelectChat(session.session_id)}
+                onClick={() => onSelectChat(session.session_id, session.fileName)}
                 className={`p-2 rounded-lg cursor-pointer ${
                   session.session_id === currentChatId
                     ? 'bg-navy-500 text-white'
@@ -113,9 +113,14 @@ const Sidebar = ({ onSelectChat, onNewChat, currentChatId }) => {
         </ul>
       </div>
 
-      <button onClick={handleLogout} className="mt-4 bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded-lg text-center">
-        Logout
-      </button>
+      <div className="mt-4">
+        <button 
+          onClick={handleLogout} 
+          className="w-full bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded-lg text-center"
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 };

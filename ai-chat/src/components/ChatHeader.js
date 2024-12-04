@@ -1,10 +1,11 @@
 import React from 'react';
-import { FiDownload } from 'react-icons/fi';  // Download icon
-import { AiOutlineClose } from 'react-icons/ai'; // Clear icon
+import { FiDownload } from 'react-icons/fi';  // Keep only the download icon
 
-const ChatHeader = ({ title, onSummarize, onDownload, onClearChat }) => (
+const ChatHeader = ({ title, onSummarize, onDownload }) => (
   <div className="bg-gray-900 p-4 flex justify-between items-center">
-    <h2 className="text-lg font-bold text-white">{title || 'No Chat Selected'}</h2>
+    <h2 className="text-lg font-bold text-white">
+      {title}
+    </h2>
     <div className="space-x-2">
       <button
         onClick={onSummarize}
@@ -17,12 +18,6 @@ const ChatHeader = ({ title, onSummarize, onDownload, onClearChat }) => (
         className="text-warm-white hover:text-warm-white p-2 rounded-lg cursor-pointer"
       >
         <FiDownload size={20} />
-      </button>
-      <button
-        onClick={onClearChat}
-        className="text-warm-white hover:text-warm-white p-2 rounded-lg cursor-pointer"
-      >
-        <AiOutlineClose size={20} />
       </button>
     </div>
   </div>
