@@ -7,13 +7,13 @@ const registerUser = async (req, res) => {
   const { firstname, lastname, email, password } = req.body;
 
   try {
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await req.app.get('models')['users'].findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ message: 'Email is already registered' });
     }
 
     const password_hash = await bcrypt.hash(password, 10);
-    const newUser = await User.create({
+    const newUser = await req.app.get('models')['users'].create({
       firstname,
       lastname,
       email,
@@ -31,7 +31,7 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ where: { email } });
+    const user = await req.app.get('models')['users'].findOne({ where: { email } });
 
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });

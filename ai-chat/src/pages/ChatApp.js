@@ -11,97 +11,35 @@ const ChatApp = () => {
 
   const currentChat = chats.find((chat) => chat.id === currentChatId);
 
-  const handleSummarize = async () => {
-    try {
-      // Prepare the chat data to be sent for summarization
-      const chatMessages = currentChat?.messages || [];
-      const requestData = {
-        messages: chatMessages,
-      };
-
-      // Make a call to the backend (using fetch or axios)
-      const response = await fetch('/api/summarize', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to summarize the chat');
-      }
-
-      const data = await response.json();
-      const summary = data.summary;
-
-      // Add the summary to the chat messages
-      setChats((prevChats) =>
-        prevChats.map((chat) =>
-          chat.id === currentChatId
-            ? { ...chat, messages: [...chat.messages, `Summary: ${summary}`] }
-            : chat
-        )
-      );
-    } catch (error) {
-      console.error('Error summarizing the chat:', error);
-      // You could handle the error more gracefully, perhaps show a message to the user
-    }
-  };
-
-  const handleDownloadChat = () => {
-    const chatData = currentChat?.messages.join('\n') || '';
-    const blob = new Blob([chatData], { type: 'text/plain' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `${currentChat?.title || 'chat'}.txt`;
-    link.click();
-  };
-
-  const handleClearChat = () => {
-    setChats((prevChats) =>
-      prevChats.map((chat) =>
-        chat.id === currentChatId ? { ...chat, messages: [] } : chat
-      )
-    );
-  };
-
-  const handleNewChat = (file) => {
-    const newChatId = chats.length ? chats[chats.length - 1].id + 1 : 1;
-    const newChat = {
-      id: newChatId,
-      title: file.name, // Use the uploaded file's name as the chat title
-      messages: [`Welcome! You've uploaded "${file.name}".`],
-    };
-    setChats([...chats, newChat]);
-    setCurrentChatId(newChatId);
-  };
-
   return (
-    <div className="chat-app">
+    <div className="flex min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 text-white">
       <Sidebar
         chats={chats}
         currentChatId={currentChatId}
         onSelectChat={(chatId) => setCurrentChatId(chatId)}
-        onNewChat={handleNewChat}
+        onNewChat={(file) =>
+          setChats([...chats, { id: chats.length + 1, title: file.name, messages: [] }])
+        }
       />
-      <div className="chat-container">
+      <div className="flex-1 flex flex-col">
         <ChatHeader
-          title={currentChat?.title || ''}
-          onSummarize={handleSummarize}
-          onDownload={handleDownloadChat}
-          onClearChat={handleClearChat}
+          title={currentChat?.title || 'Chat Application'}
+          onSummarize={() => {}}
+          onDownload={() => {}}
+          onClearChat={() => {}}
         />
         <ChatBox messages={currentChat ? currentChat.messages : []} />
-        <UserInput onSend={(message) =>
-          setChats((prevChats) =>
-            prevChats.map((chat) =>
-              chat.id === currentChatId
-                ? { ...chat, messages: [...chat.messages, message] }
-                : chat
+        <UserInput
+          onSend={(message) =>
+            setChats((prevChats) =>
+              prevChats.map((chat) =>
+                chat.id === currentChatId
+                  ? { ...chat, messages: [...chat.messages, message] }
+                  : chat
+              )
             )
-          )
-        } />
+          }
+        />
       </div>
     </div>
   );
