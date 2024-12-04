@@ -1,11 +1,39 @@
 import React, { useState } from 'react';
 
-const UserInput = ({ onSend }) => {
+const UserInput = ({ onSend, sessionId }) => {
   const [input, setInput] = useState('');
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (input.trim()) {
-      onSend(input);
+      const userMessage = input;
+
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:8080/chat', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            session_id: sessionId,
+            userMessage: userMessage,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch AI response');
+        }
+
+        const data = await response.json();
+        const aiResponse = data.aiResponse;
+
+        onSend(userMessage, aiResponse);
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
+
+      // Reset the input field
       setInput('');
     }
   };

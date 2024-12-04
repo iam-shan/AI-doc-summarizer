@@ -62,14 +62,13 @@ const ChatApp = () => {
         />
         <ChatBox messages={chats} />
         <UserInput
-          onSend={(message) =>
-            setChats((prevChats) =>
-              prevChats.map((chat) =>
-                chat.id === currentChatId
-                  ? { ...chat, messages: [...chat.messages, message] }
-                  : chat
-              )
-            )
+          sessionId={currentChatId}  // Pass sessionId to UserInput
+          onSend={(userMessage, aiResponse) =>
+            setChats((prevChats) => [
+              ...prevChats,
+              { sender: 'user', text: userMessage },
+              { sender: 'bot', text: aiResponse }
+            ])
           }
         />
       </div>
