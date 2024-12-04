@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     sessions: {
-      type: DataTypes.ARRAY(DataTypes.STRING), // Array of integers for restaurant IDs
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
     },
   }, 
