@@ -7,6 +7,8 @@ const mammoth = require('mammoth');
 const Tesseract = require('tesseract.js');
 const axios =  require('axios')
 
+const {saveFile } = require('../handlers/saveFileHandler')
+
 const { storeEmbedding, getEmbeddings } = require('../handlers/qdrantHandler');
 
 
@@ -93,15 +95,17 @@ exports.uploadFile = async (req, res) => {
         console.log('filecontent -end')
         // // Generate embeddings and store them
         const embeddings = await generateEmbedding(fileContent);
-// console.log(embeddings);
-        // userId should be passed to map the session and users
+
         const sessionId = await generateSessionId();
 
        
         await storeEmbedding(sessionId, embeddings);
+        /**
+         * map the user with sessions
+         */
 
-        // // Create a session
-        // const sessionId = await createSession(file.id);
+        //save the file to postgresql
+        await saveFile(req, sessionId)
 
         // res.status(200).json({ message: 'File uploaded and processed successfully', sessionId });
         res.status(200).send({msg: "file uploaded sucessfully", session_id:sessionId})
