@@ -1,7 +1,7 @@
 const express = require('express');
 const chatController = require('../controllers/chatController');
+const userHandler = require('../handlers/users_management_handler')
 const router = express.Router();
 
-router.post('/', chatController.chatWithFile); // Chat with file
-router.get('/:fileId/history', chatController.getChatHistory); // Fetch chat history
+router.post('/fetchSessions', userHandler.getSessions); // Chat with file
 module.exports = router;

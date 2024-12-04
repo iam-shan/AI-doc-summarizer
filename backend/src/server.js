@@ -7,6 +7,7 @@ const { models,sequelize, initializeDatabase } = require('./models');
 app.set('models', models)
 const fileUpload = require('./routes/fileUploadRouter')
 const chat = require('./routes/chatRouter')
+const user = require('./routes/userRoutes')
 const cors = require('cors');
 const authenticateJWT = require('./middlewares/auth')
 
@@ -23,6 +24,7 @@ app.use('/',router);
 app.use('/api/auth', authRoutes);
 app.use('/upload', authenticateJWT, fileUpload);
 app.use('/chat', authenticateJWT, chat)
+app.use('/user', user)
 app.get('/health',(req,res)=>{
     res.send({"msg": "Applicaiton is working !!" ,  "date" : `${new Date()}`})
 })
