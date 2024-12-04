@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const { Sequelize } = require('sequelize');
 
-const generateSessionId = async()=>{
+const   generateSessionId = async()=>{
     //creating a unique session id
     const session_id = crypto.randomBytes(16).toString('hex');
     return session_id;
@@ -55,8 +55,27 @@ const getSessions = async(req, res)=>{
     }
 }
 
+const getChatsBasedOnSessionId = async(req, res)=>{
+    try {
+        if(!req.body.session_id) return res.status(400).send({"msg":"session_id is missing"});
+        const { session_id } = req.body;
+        console.log('coming here')
+        const chats = await req.app.get('models')['chats'].findAll({
+            where: {
+              session_id: session_id,
+            }          });
+
+        console.log(chats)
+
+        if(chats) return res.status(200).send({data: chats})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports ={
     generateSessionId,
     updateUserSession,
-    getSessions
+    getSessions,
+    getChatsBasedOnSessionId    
 }
