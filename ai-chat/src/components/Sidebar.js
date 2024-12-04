@@ -51,7 +51,7 @@ const Sidebar = ({ onSelectChat, onNewChat, currentChatId }) => {
       formData.append('file', file);
 
       try {
-        const response = await fetch('http://localhost:8080/user/uploadFile', {
+        const response = await fetch('http://localhost:8080/upload', {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
