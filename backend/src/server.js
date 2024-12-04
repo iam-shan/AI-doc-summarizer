@@ -2,46 +2,45 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const router = express.Router();
-app.use(express.json())
-const { models,sequelize, initializeDatabase } = require('./models');
-app.set('models', models)
-const fileUpload = require('./routes/fileUploadRouter')
-const chat = require('./routes/chatRouter')
-const user = require('./routes/userRoutes')
+const { models, sequelize, initializeDatabase } = require('./models');
+const fileUpload = require('./routes/fileUploadRouter');
+const chat = require('./routes/chatRouter');
+const user = require('./routes/userRoutes');
 const cors = require('cors');
-const authenticateJWT = require('./middlewares/auth')
+const authenticateJWT = require('./middlewares/auth');
+const authRoutes = require('./routes/authRoutes');
+const { initializeCollection } = require('./handlers/qdrantHandler');
 
-const authRoutes = require('./routes/authRoutes')
-const {initializeCollection} = require('./handlers/qdrantHandler')
+// Basic middleware
+app.use(express.json());
+app.set('models', models);
 
+// Open CORS configuration
 app.use(cors({
-  origin: [
-    'https://main.d19opk0v2645vf.amplifyapp.com',
-    'http://localhost:3000'
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  maxAge: 86400
 }));
 
-app.options('/upload', cors()); 
-app.options('/api/auth/*', cors()); 
-app.options('/chat', cors()); 
-app.options('/user/*', cors()); 
-app.options('/user/fetchSessions', cors());
-app.options('/user/getChats', cors());
+// Handle all preflight
+app.options('*', cors());
 
-// Then define all your routes
+// Routes
 app.use('/', router);
 app.use('/api/auth', authRoutes);
 app.use('/upload', authenticateJWT, fileUpload);
 app.use('/chat', authenticateJWT, chat);
-app.use('/user', user);
+app.use('/user', authenticateJWT, user);
 
-// Health check can be last
+// Health check endpoint
 app.get('/health', (req, res) => {
-    res.send({"msg": "Application is working !!", "date": `${new Date()}`});
+    res.send({
+        "msg": "Application is working !!",
+        "date": `${new Date()}`
+    });
 });
-
 // const multer = require('multer');
 
 // const storage = multer.memoryStorage(); // Store files in memory as buffer
