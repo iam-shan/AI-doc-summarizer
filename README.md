@@ -27,3 +27,9 @@ Enterprises manage large volumes of documents daily, leading to inefficiencies a
    - **Pain Points**: Reviews extensive financial reports, forecasts, and budget documents, which are time-consuming to analyze.  
    - **Needs**: Concise summaries of financial data and key metrics to quickly assess performance and opportunities.  
    - **Goal**: Improve financial planning by focusing on high-level insights while reducing time spent on document analysis.
+
+## System Architecture
+
+Below is the system architecture for the AI-Enabled Enterprise Document Summarizer:
+
+![System Architecture (4)](https://github.com/user-attachments/assets/4b1bdb6a-a157-4bfd-8f87-45dfbe465955)
