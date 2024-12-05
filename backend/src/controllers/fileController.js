@@ -7,7 +7,10 @@ const mammoth = require('mammoth');
 const Tesseract = require('tesseract.js');
 const axios =  require('axios')
 
+const {saveFile } = require('../handlers/saveFileHandler')
+
 const { storeEmbedding, getEmbeddings } = require('../handlers/qdrantHandler');
+const {updateUserSession} = require("../handlers/users_management_handler");
 
 
 async function extractTextFromFile(file) {
@@ -93,19 +96,28 @@ exports.uploadFile = async (req, res) => {
         console.log('filecontent -end')
         // // Generate embeddings and store them
         const embeddings = await generateEmbedding(fileContent);
-// console.log(embeddings);
-        // userId should be passed to map the session and users
+
         const sessionId = await generateSessionId();
 
-       
-        await storeEmbedding(sessionId, embeddings);
 
+        await storeEmbedding(sessionId, embeddings);
+        /**
+         * map the user with sessions
+         */
+
+        //save the file to postgresql
+        const fileId = await saveFile(req, sessionId)
+        await updateUserSession(req, sessionId);
         // // Create a session
         // const sessionId = await createSession(file.id);
 
         // res.status(200).json({ message: 'File uploaded and processed successfully', sessionId });
-        res.status(200).send({msg: "file uploaded sucessfully", session_id:sessionId})
+        res.status(200).send({msg: "file uploaded successfully", fileId: fileId, session_id: sessionId});
     } catch (error) {
-        console.log(error)
+        console.error('Upload error:', error);
+        res.status(500).json({ 
+            error: 'File upload failed', 
+            message: error.message 
+        });
     }
 };

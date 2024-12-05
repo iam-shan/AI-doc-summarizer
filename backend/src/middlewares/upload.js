@@ -1,25 +1,15 @@
 const multer = require('multer');
 const path = require('path');
-const pdf = require('pdf-parse');
-const mammoth = require('mammoth');
-const Tesseract = require('tesseract.js');
 
-
-// Configure multer storage
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, 'uploads/'); // Directory to store uploaded files
-//     },
-//     filename: (req, file, cb) => {
-//         cb(null, `${Date.now()}-${file.originalname}`);
-//     },
-// });
 const storage = multer.memoryStorage();
 
 const upload = multer({
     storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB limit
+    },
     fileFilter: (req, file, cb) => {
-        const fileTypes = /txt|pdf|docx|json/; // Adjust based on allowed file types
+        const fileTypes = /txt|pdf|docx|json/;
         const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
         if (extname) {
             return cb(null, true);

@@ -2,41 +2,54 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const router = express.Router();
-app.use(express.json())
-const { models,sequelize, initializeDatabase } = require('./models');
-app.set('models', models)
-const fileUpload = require('./routes/fileUploadRouter')
-const chat = require('./routes/chatRouter')
+const { models, sequelize, initializeDatabase } = require('./models');
+const fileUpload = require('./routes/fileUploadRouter');
+const chat = require('./routes/chatRouter');
+const user = require('./routes/userRoutes');
 const cors = require('cors');
-const authenticateJWT = require('./middlewares/auth')
+const authenticateJWT = require('./middlewares/auth');
+const authRoutes = require('./routes/authRoutes');
+const { initializeCollection } = require('./handlers/qdrantHandler');
 
-const authRoutes = require('./routes/authRoutes')
-const {initializeCollection} = require('./handlers/qdrantHandler')
+// Basic middleware
+app.use(express.json());
+app.set('models', models);
 
+// Open CORS configuration
 app.use(cors({
-  origin: 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: '*',
+  methods: '*',
+  allowedHeaders: '*',
+  credentials: true
 }));
 
-app.use('/',router);
+// Handle preflight for all routes
+app.options('*', cors());
+
+// Routes
+app.use('/', router);
 app.use('/api/auth', authRoutes);
 app.use('/upload', authenticateJWT, fileUpload);
-app.use('/chat', authenticateJWT, chat)
-app.get('/health',(req,res)=>{
-    res.send({"msg": "Applicaiton is working !!" ,  "date" : `${new Date()}`})
-})
+app.use('/chat', authenticateJWT, chat);
+app.use('/user', authenticateJWT, user);
 
-const multer = require('multer');
-
-const storage = multer.memoryStorage(); // Store files in memory as buffer
-const upload = multer({
-  storage,
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
-  },
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.send({
+        "msg": "Application is working !!",
+        "date": `${new Date()}`
+    });
 });
-app.use(multer)
+// const multer = require('multer');
+
+// const storage = multer.memoryStorage(); // Store files in memory as buffer
+// const upload = multer({
+//   storage,
+//   limits: {
+//     fileSize: 5 * 1024 * 1024, // 5MB limit
+//   },
+// });
+// app.use(multer)
 
 
 // Sync the database and start the server

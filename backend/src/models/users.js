@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
     firstname:{
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
     lastname:{
       type: DataTypes.STRING,
@@ -25,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     sessions: {
-      type: DataTypes.ARRAY(DataTypes.INTEGER), // Array of integers for restaurant IDs
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
     },
   }, 
