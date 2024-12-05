@@ -13,7 +13,7 @@ const Footer = () => (
         <FaLinkedin size={24} />
       </a>
     </div>
-    //changed name
+    
     <p className="text-center mt-4">© 2024 Sum-It-AI. All rights reserved.</p>
   </footer>
 );
