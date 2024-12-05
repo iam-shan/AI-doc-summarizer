@@ -13,7 +13,7 @@ const Footer = () => (
         <FaLinkedin size={24} />
       </a>
     </div>
-    <p className="text-center mt-4">© 2024 [Your App Name]. All rights reserved.</p>
+    <p className="text-center mt-4">© 2024 Sum-It-AI. All rights reserved.</p>
   </footer>
 );
 
