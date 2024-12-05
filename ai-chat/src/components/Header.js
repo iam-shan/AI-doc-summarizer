@@ -7,6 +7,9 @@ const Header = () => {
   return (
     <header className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-center py-20">
       <h1 className="text-5xl font-extrabold tracking-tight">
+        Sum-It-AI
+        <br></br>
+        <br></br>
         Revolutionize Your PDF Workflow
       </h1>
       <p className="mt-4 text-xl">
