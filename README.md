@@ -1,10 +1,10 @@
 # Sum-It-AI
 
-## Deployment URL
-https://main.d19opk0v2645vf.amplifyapp.com/
 
 ## Project Description
 The Sum-It-AI Document Summarizer leverages LLM to automatically summarize lengthy enterprise documents, such as reports and contracts, into concise, actionable insights. Integrated with enterprise chatbots, the platform allows employees to query and receive real-time, contextual summaries, enhancing efficiency in information retrieval and decision-making.
+### Deployment URL
+https://main.d19opk0v2645vf.amplifyapp.com/
 
 ## Problem Statement
 Enterprises manage large volumes of documents daily, leading to inefficiencies and delayed decisions. Employees often spend excessive time extracting key information. This project aims to provide an AI-powered solution that delivers quick, actionable document summaries and real-time responses via chatbot integration.
